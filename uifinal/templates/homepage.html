@@ -1,0 +1,25 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="text-center mb-5">
+  <h1>Campus Birds</h1>
+  
+  <p class="lead">
+    A searchable guide to birds spotted around Columbia’s campus!
+  </p>
+</div>
+
+
+
+<h2>Popular Birds</h2>
+<div id="popular-birds" class="row"></div>
+<h2> Explore more</h2>
+<div id="other-birds" class="row"></div>
+
+<script src="{{ url_for('static', filename='homepage.js') }}"></script>
+<script>
+  let birdData = {{ birds | tojson }};
+</script>
+{% endblock %}

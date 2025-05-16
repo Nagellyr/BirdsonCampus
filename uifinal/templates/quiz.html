@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center fw-bold mb-4">Popular Birds Quiz</h2>
+
+  <form method="POST">
+    {% for q in questions %}
+
+      {% if q.type == "drag-match" %}
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+          <p class="fw-semibold">{{ q.question }}</p>
+
+          
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 text-center">
+            {% for opt in q.options %}
+            <div class="col">
+              <img src="{{ opt.image }}" class="img-fluid border rounded" style="max-height: 200px;">
+              <div class="drop-zone border rounded mt-2 p-2 bg-light" data-expected="{{ opt.value }}">
+                Drop here
+              </div>
+              <input type="hidden" name="{{ q.name }}_{{ opt.value }}" class="drag-answer">
+            </div>
+            {% endfor %}
+          </div>
+
+         
+          <div class="d-flex justify-content-center gap-3 flex-wrap mt-4">
+            {% for opt in q.options %}
+            <div class="draggable btn btn-outline-dark" data-value="{{ opt.value }}">
+              {{ opt.label }}
+            </div>
+            {% endfor %}
+          </div>
+
+          {% if feedback[q.name] %}
+            <p class="mt-3 fw-semibold {% if 'Correct!' in feedback[q.name] %}text-success{% else %}text-danger{% endif %}">
+              {{ feedback[q.name] }}
+            </p>
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+      
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+          <p class="fw-semibold">{{ q.question }}</p>
+
+          {% for option in q.options %}
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="{{ q.name }}" value="{{ option }}"
+                   id="{{ q.name }}-{{ loop.index }}"
+                   {% if request.method == 'POST' and option == request.form.get(q.name) %}checked{% endif %}>
+            <label class="form-check-label" for="{{ q.name }}-{{ loop.index }}">{{ option }}</label>
+          </div>
+          {% endfor %}
+
+          {% if feedback[q.name] %}
+          <p class="mt-2 fw-semibold 
+              {% if 'Correct!' in feedback[q.name] %}text-success
+              {% elif 'Incorrect' in feedback[q.name] %}text-danger
+              {% else %}text-warning{% endif %}">
+            {{ feedback[q.name] }}
+          </p>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+    {% endfor %}
+
+    <div class="text-center">
+      <button type="submit" class="btn btn-custom">Submit</button>
+      {% if request.method == "POST" %}
+        <a href="{{ url_for('quiz') }}" class="btn btn-outline-secondary ms-3">Retake Quiz</a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+$(function () {
+  $(".draggable").draggable({
+    revert: "invalid",
+    helper: "clone"
+  });
+
+  $(".drop-zone").droppable({
+    accept: ".draggable",
+    hoverClass: "bg-warning",
+    drop: function (event, ui) {
+      const droppedValue = ui.draggable.data("value");
+      $(this).text(ui.draggable.text());
+      $(this).data("dropped", droppedValue);
+      const name = $(this).data("expected");
+      $(this).siblings("input.drag-answer").val(droppedValue);
+    }
+  });
+});
+</script>
+{% endblock %}

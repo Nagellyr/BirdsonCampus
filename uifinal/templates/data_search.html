@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Search Results</h2>
+
+{% if empty_search %}
+  <p>Please enter a search term.</p>
+{% elif results %}
+  <p>{{ results|length }} result(s) found for: <strong>{{ query }}</strong></p>
+  <div class="row">
+    {% for bird in results %}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
+        <img src="{{ bird.image }}" class="card-img-top" alt="{{ bird.title }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ bird.highlight_title | safe }}</h5>
+          <strong> Spotted Locations:</strong>
+          <ul>
+            {% for loc in bird.highlight_locations %}
+              <li>{{ loc | safe }}</li>
+            {% endfor %}
+          </ul>
+          <a href="{{ url_for('view', id=bird.id) }}" class="btn btn-custom">View Bird</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>No matches found for "<strong>{{ query }}</strong>".</p>
+{% endif %}
+{% endblock %}

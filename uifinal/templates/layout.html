@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Campus Birds</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='/main.css') }}">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg-shadow-sm px-4">
+    <a class="navbar-brand" href="{{ url_for('home') }}">Campus Birds</a>
+    <a class="nav-link" href="{{ url_for('add') }}">Add Bird</a>
+    <a class="nav-link" href="{{ url_for('quiz') }}">Test your Knowledge</a>
+
+
+    <form class="d-flex" action="{{ url_for('search') }}" method="get">
+        <input class="form-control me-2" type="search" name="q" id=searchInput placeholder="Search for birds here" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+</nav>
+
+<div class="container mt-4">
+    {% block content %}{% endblock %}
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+{% block scripts %}{% endblock %}
+
+
+
+
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.querySelector("form");
+      const input = document.getElementById("searchInput");
+  
+      form.addEventListener("submit", (e) => {
+        const query = input.value.trim();
+  
+        if (!query) {
+          e.preventDefault();
+          input.value = "";  
+          input.focus();      
+        }
+      });
+    });
+  </script>
+  
+</html>

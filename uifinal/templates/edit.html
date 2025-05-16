@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Edit Bird: {{ bird.title }}</h2>
+
+<form id="edit-form">
+  <input type="hidden" name="id" value="{{ bird.id }}">
+  <div class="mb-2"><input class="form-control" name="title" value="{{ bird.title }}"></div>
+  <div class="mb-2"><textarea class="form-control" name="summary">{{ bird.summary }}</textarea></div>
+  <div class="mb-2"><input class="form-control" name="identifying_traits" value="{{ bird.identifying_traits | join(', ') }}"></div>
+  <div class="mb-2"><input class="form-control" name="locations" value="{{ bird.locations | join(', ') }}"></div>
+  <div class="mb-2"><input class="form-control" name="image" value="{{ bird.image }}"></div>
+  <div class="mb-2"><input class="form-control" name="wingspan_cm" value="{{ bird.wingspan_cm }}"></div>
+
+  <button class="btn btn-custom  me-2" type="submit">Submit</button>
+  <button class="btn btn-outline-danger" type="button" id="discard-btn">Discard Changes</button>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('edit-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+  const data = {};
+  formData.forEach((val, key) => data[key] = val.trim());
+
+  const response = await fetch("/submit", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(data)
+  });
+
+  const result = await response.json();
+  if (response.ok) {
+    window.location.href = `/view/${result.id}`;
+  } else {
+    alert(result.error || "Submission failed.");
+  }
+});
+
+document.getElementById('discard-btn').addEventListener('click', () => {
+  if (confirm(" Are you sure that you want to discard changes?")) {
+    const id = document.querySelector('input[name="id"]').value;
+    window.location.href = `/view/${id}`;
+  }
+});
+</script>
+{% endblock %}

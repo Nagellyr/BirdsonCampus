@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mt-5">
+  <!-- Bird Title -->
+  <div class="text-center mb-4">
+    <h1 class="fw-bold">{{ bird.title }}</h1>
+    {% if bird.popular %}
+      <span class="badge bg-success fs-6">Popular!</span>
+    {% endif %}
+  </div>
+
+  <!-- Layout -->
+  <div class="row align-items-start">
+    <!-- Image -->
+    <div class="col-md-6">
+      <img src="{{ bird.image }}" alt="{{ bird.title }}" class="img-fluid rounded shadow mb-3" style="max-height: 450px;">
+    </div>
+
+    <!-- Summary -->
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <p class="lead">{{ bird.summary }}</p>
+
+          <ul class="list-unstyled">
+            <li><strong>Wingspan:</strong> {{ bird.wingspan_cm }} cm</li>
+            <li><strong>Identifying Traits:</strong>
+              <ul>
+                {% for trait in bird.identifying_traits %}
+                  <li>{{ trait }}</li>
+                {% endfor %}
+              </ul>
+            </li>
+            <li><strong>Spotted Locations:</strong><br>
+              {% for loc in bird.locations %}
+                <a href="{{ url_for('search') }}?q={{ loc | urlencode }}" class="text-decoration-underline me-2">{{ loc }}</a>
+              {% endfor %}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if bird.popular %}
+  <div class="alert alert-info mt-4">
+    
+
+    <h6 class="mt-3">Other commonly seen birds:</h6>
+    <ul class="list-inline">
+      {% for other in popular_birds %}
+        {% if other.id != bird.id %}
+          <li class="list-inline-item"><a href="{{ url_for('view', id=other.id) }}">{{ other.title }}</a></li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+    <h5 class="mb-2">Want to test your knowledge of popular birds?</h5>
+    <a href="{{ url_for('quiz') }}" class="btn btn-custom btn-sm me-3">Take the Quiz</a>
+  </div>
+  {% endif %}
+
+  <div class="mt-3 text-center">
+    <a href="{{ url_for('edit', id=bird.id) }}" class="btn btn-outline-secondary">Edit this bird</a>
+  </div>
+</div>
+{% endblock %}

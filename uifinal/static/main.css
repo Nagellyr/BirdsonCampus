@@ -1,0 +1,67 @@
+
+  h1,h2, h3,p {
+    font-weight: 600;
+    color: #343a40;
+  }
+  
+  .card {
+    border-radius: 0.75rem;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+  }
+  .card-body{
+    background-color: #ececec;
+
+  }
+  
+  .badge {
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  
+  .a:hover {
+    text-decoration: underline;
+    color:#ffc107;
+  }
+ 
+  body {
+    background-color: #aacbd8; 
+    font-family: 'Helvetica Neue', sans-serif;
+    margin: 0;
+  }
+  
+  .navbar {
+    background-color: #ececec;; 
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);  
+  }
+  
+  .navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
+  
+  .navbar a {
+    color: #005262;
+  }
+  
+  .navbar a:hover {
+    text-decoration: underline;
+    color: #ffc107;
+  }
+  .btn-custom {
+    background-color:#ffc107;
+    color: white;
+    border: none;
+  }
+  
+  .btn-custom:hover {
+    background-color: white;
+    color: #ffc107;
+  }
+ 

@@ -1,0 +1,151 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Have you seen a bird near campus that is not on this list?</h2>
+<br>
+<p>Add it here:</p>
+<div id="result" class="mb-3 text-success"></div>
+
+<form id="add-form">
+
+  <div class="mb-2">
+    <label for="title">Bird Name</label>
+    <input class="form-control" id="title" name="title" placeholder="e.g., Blue Jay">
+    <div id="titleError" class="text-danger small"></div>
+</div>
+
+  <div class="mb-2">
+    <label for="summary">Description</label>
+    <textarea class="form-control" id="summary" name="summary" placeholder=" The bird was..."></textarea>
+    <div id="summaryError" class="text-danger small"></div>
+    </div>
+
+  <div class="mb-2">
+    <label for="identifying_traits"> Identifying Traits</label>
+    <input class="form-control" id="identifying_traits" name="identifying_traits" placeholder="Traits (comma-separated)">
+    <div id="traitsError" class="text-danger small"></div>
+    </div>
+  <div class="mb-2">
+    <label for="locations">Where did you see the bird?</label>
+    <input class="form-control" id= "locations" name="locations" placeholder="Locations (comma-separated)">
+    <div id="locationsError" class="text-danger small"></div>
+    </div>
+
+  <div class="mb-2">
+    <label for="image"> Link an Image</label>
+    <input class="form-control"id="image" name="image" placeholder="Image URL">
+    <div id="imageError" class="text-danger small"></div></div>
+
+  <div class="mb-2">
+    <label for="wingspan_cm">Wingspan</label>
+    <input class="form-control" id="wingspan_cm"  name="wingspan_cm" placeholder="Wingspan (cm)">
+    <div id="wingspanError" class="text-danger small"></div></div>
+
+    <div class="info">
+        <strong>Not sure about the bird’s name or wingspan?</strong><br>
+        <a href="https://www.allaboutbirds.org/news/search/?" target="_blank" rel="noopener noreferrer">
+          Use this Birding Guide as a reference
+        </a>
+      </div>
+      
+  <button class="btn btn-custom" type="submit">Submit</button>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('add-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const title = form.title.value.trim();
+  const summary = form.summary.value.trim();
+  const traits = form.identifying_traits.value.trim();
+  const locations = form.locations.value.trim();
+  const image = form.image.value.trim();
+  const wingspan = form.wingspan_cm.value.trim();
+
+  // Clear all previous errors
+  document.getElementById("titleError").textContent = "";
+  document.getElementById("summaryError").textContent = "";
+  document.getElementById("traitsError").textContent = "";
+  document.getElementById("locationsError").textContent = "";
+  document.getElementById("imageError").textContent = "";
+  document.getElementById("wingspanError").textContent = "";
+
+  let hasError = false;
+
+  if (!title) {
+    document.getElementById("titleError").textContent = "Please enter a bird name.";
+    if (!hasError) form.title.focus();
+    hasError = true;
+  }
+
+  if (!summary) {
+    document.getElementById("summaryError").textContent = "Please enter a description.";
+    if (!hasError) form.summary.focus();
+    hasError = true;
+  }
+
+  if (!traits) {
+    document.getElementById("traitsError").textContent = "Please enter identifying traits.";
+    if (!hasError) form.identifying_traits.focus();
+    hasError = true;
+  }
+
+  if (!locations) {
+    document.getElementById("locationsError").textContent = "Please enter a location.";
+    if (!hasError) form.locations.focus();
+    hasError = true;
+  }
+
+  if (!image) {
+    document.getElementById("imageError").textContent = "Please provide an image link.";
+    if (!hasError) form.image.focus();
+    hasError = true;
+  }
+
+  if (!wingspan) {
+    document.getElementById("wingspanError").textContent = "Please enter a wingspan.";
+    if (!hasError) form.wingspan_cm.focus();
+    hasError = true;
+  } else if (isNaN(wingspan)) {
+    document.getElementById("wingspanError").textContent = "Wingspan must be a number.";
+    if (!hasError) form.wingspan_cm.focus();
+    hasError = true;
+  }
+
+  if (hasError) return;
+
+  // Build data to send
+  const data = {
+    title,
+    summary,
+    identifying_traits: traits,
+    locations,
+    image,
+    wingspan_cm: wingspan
+  };
+
+  const response = await fetch("/submit", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(data)
+  });
+
+  const result = await response.json();
+
+  if (response.ok) {
+    document.getElementById("result").innerHTML = `
+      New item successfully created.
+      <a href="/view/${result.id}" class="btn btn-sm btn-success ms-2">See it here</a>
+    `;
+    form.reset();
+    form.title.focus();
+  } else {
+    alert(result.error || "Submission failed");
+  }
+});
+</script>
+{% endblock %}
+

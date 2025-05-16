@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container text-center mt-5">
+  <h2 class="text-success fw-bold mb-3">Perfect Score!</h2>
+    <hr class="my-5">
+
+  <h4 class="mb-4">Learn more about other birds you might see:</h4>
+
+
+
+<div class="d-flex overflow-auto gap-3 mt-3 pt-2 pb-4" style="scroll-snap-type: x mandatory;">
+  {% for bird in birds %}
+    <div class="card" style="min-width: 250px; scroll-snap-align: start;">
+      <img src="{{ bird.image }}" class="card-img-top" style="max-height: 180px; object-fit: cover;">
+      <div class="card-body">
+        <h6 class="card-title">{{ bird.title }}</h6>
+        <a href="{{ url_for('view', id=bird.id) }}" class="btn btn-outline-info btn-sm">View Bird</a>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+</div>
+{% endblock %}
